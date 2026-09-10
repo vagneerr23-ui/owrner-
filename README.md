@@ -1,2 +1,0 @@
-# owrner-
-App teste
