@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#090909">
+<title>Minha Meta — Calculadora Financeira</title>
+<style>
+:root{
+  --bg:#080909;
+  --panel:#101010;
+  --card:#181717;
+  --card2:#1d1b18;
+  --line:#35312a;
+  --gold:#efd05e;
+  --gold2:#f7dc72;
+  --gold3:#c9a83a;
+  --text:#f4f2ed;
+  --muted:#a6a39e;
+  --muted2:#77746f;
+  --shadow:0 18px 50px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+html{background:var(--bg);scroll-behavior:smooth}
+body{
+  margin:0;background:radial-gradient(circle at 50% -15%,#17140d 0,#080909 34%,#080909 100%);
+  color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  min-height:100vh;
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.app{max-width:1180px;margin:auto;padding:18px 18px 70px}
+.topbar{
+  height:64px;border-bottom:1px solid #242321;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:20;background:rgba(8,9,9,.84);backdrop-filter:blur(18px);
+}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{
+  width:44px;height:44px;border:1px solid #b99732;border-radius:12px;display:grid;place-items:center;
+  color:var(--gold);background:#12110e;box-shadow:0 0 22px rgba(239,208,94,.12);font-weight:900;font-size:23px
+}
+.brand h1{font-size:17px;margin:0;font-weight:800;letter-spacing:-.3px}
+.brand span{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.top-actions{display:flex;gap:8px}
+.icon-btn{
+  width:38px;height:38px;border:1px solid #302e2b;border-radius:10px;background:#111;color:#bbb;
+}
+.hero{padding:38px 0 28px}
+.eyebrow{color:#c9a83a;font-size:12px;letter-spacing:2px;font-weight:800;margin-bottom:16px}
+.hero h2{font-size:clamp(30px,5vw,50px);letter-spacing:-1.8px;margin:0 0 12px}
+.hero p{margin:0;color:var(--muted);font-size:16px}
+.grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(360px,.9fr);gap:18px;align-items:start}
+.panel{
+  background:linear-gradient(145deg,rgba(25,24,22,.96),rgba(12,12,12,.98));
+  border:1px solid #38332b;border-radius:20px;box-shadow:var(--shadow);overflow:hidden
+}
+.panel-head{padding:20px 22px;border-bottom:1px solid #2a2825}
+.panel-head h3{margin:0;font-size:18px}
+.panel-head p{margin:6px 0 0;color:var(--muted);font-size:13px}
+.panel-body{padding:22px}
+.field{margin-bottom:18px}
+.field label{display:flex;justify-content:space-between;align-items:center;color:#b6b3ae;font-size:12px;font-weight:800;letter-spacing:.8px;margin:0 0 9px}
+.input-wrap{position:relative}
+.input-wrap span{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:#9e9b95;font-size:14px;pointer-events:none}
+.input-wrap input{padding-left:48px}
+input{
+  width:100%;height:57px;border:1px solid #393735;border-radius:14px;background:#1a1818;color:var(--text);
+  padding:0 16px;font-size:17px;outline:none;transition:.2s;
+}
+input:focus{border-color:#c6a43b;box-shadow:0 0 0 3px rgba(239,208,94,.09)}
+.suffix{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:#9b9892;font-size:14px}
+.rate-switch{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+.rate-switch button{
+  height:47px;border:1px solid #393735;border-radius:11px;background:#1a1919;color:#b6b2ac;font-weight:700
+}
+.rate-switch button.active{border-color:#d1b449;color:#f2df88;background:#19170f}
+.advanced{
+  border:1px solid #37332e;border-radius:13px;padding:14px 15px;background:#191817;color:#aaa;
+  margin-top:6px;display:flex;justify-content:space-between;align-items:center;font-size:13px
+}
+.badge{font-size:10px;letter-spacing:.4px;padding:5px 8px;border-radius:6px;background:#292723;color:#b9b4aa}
+.actions{display:grid;grid-template-columns:1fr 140px;gap:10px;margin-top:18px}
+.primary,.secondary{height:59px;border-radius:14px;font-weight:900;border:1px solid #3b362a}
+.primary{
+  background:linear-gradient(100deg,#dfbd16,#f5d878);color:#12100a;box-shadow:0 12px 28px rgba(239,208,94,.15)
+}
+.secondary{background:#101010;color:#b9b6b0}
+.note{margin-top:16px;padding:16px;border:1px solid #403a2b;border-radius:14px;background:#211f17;color:#b7b3aa;font-size:13px;line-height:1.55}
+.note strong{color:var(--gold)}
+.results{display:grid;gap:12px}
+.result{
+  border:1px solid #343230;border-radius:15px;background:#191818;padding:18px 20px;text-align:center
+}
+.result small{display:block;color:#aaa6a0;font-size:12px;letter-spacing:.5px;margin-bottom:7px}
+.result strong{font-size:28px;letter-spacing:-.7px}
+.result.highlight{background:#211f17;border-color:#48402d}
+.result.highlight strong{color:var(--gold)}
+.chart-panel{margin-top:18px}
+.legend{display:flex;gap:22px;color:#a9a59f;font-size:12px;padding:0 22px 14px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block;vertical-align:-2px;margin-right:7px}
+.legend .principal{background:#777}
+.legend .interest{background:var(--gold)}
+.chart-wrap{height:320px;padding:8px 14px 16px}
+canvas{width:100%;height:100%;display:block}
+.table-panel{margin-top:18px}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:680px}
+th,td{padding:14px 16px;border-bottom:1px solid #2b2926;text-align:right;font-size:13px;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{color:#9e9a94;font-size:11px;letter-spacing:.7px;background:#161515}
+td{color:#d8d5cf}
+td.gold{color:#e4c95e;font-weight:700}
+tr.year td{background:#17150f}
+.year-tag{font-size:10px;padding:4px 7px;border-radius:5px;background:#29261d;color:#d6bd59;margin-left:7px}
+.footer{color:#68655f;text-align:center;font-size:11px;padding:30px 0 0}
+@media(max-width:820px){
+  .app{padding:0 0 55px}
+  .topbar{padding:0 20px;height:62px}
+  .hero{padding:28px 24px 24px}
+  .grid{display:block}
+  .panel{border-radius:18px;margin:0 0 14px}
+  .panel-body{padding:18px}
+  .panel-head{padding:18px}
+  .chart-panel,.table-panel{margin-left:0;margin-right:0}
+  .actions{grid-template-columns:1fr 110px}
+  .chart-wrap{height:270px}
+}
+@media(max-width:500px){
+  .brand h1{font-size:15px}
+  .brand span{font-size:10px}
+  .hero h2{font-size:32px}
+  .hero p{font-size:14px;line-height:1.45}
+  input{height:56px}
+  .actions{grid-template-columns:1fr 108px}
+  .primary,.secondary{height:56px}
+  .result strong{font-size:27px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">$</div>
+      <div><h1>Minha Meta 💰</h1><span>Controle Pessoal de Economia</span></div>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="resetTop" title="Limpar">↻</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow">CALCULADORA · INVESTIMENTOS</div>
+    <h2>Calculadora de Juros Compostos</h2>
+    <p>Calcule seu investimento com juros compostos e visualize o crescimento.</p>
+  </section>
+
+  <main class="grid">
+    <section class="panel">
+      <div class="panel-head">
+        <h3>Simulação</h3>
+        <p>Preencha os dados para projetar seu patrimônio.</p>
+      </div>
+      <div class="panel-body">
+        <div class="field">
+          <label>VALOR INICIAL</label>
+          <div class="input-wrap"><span>R$</span><input id="initial" inputmode="decimal" value="0"></div>
+        </div>
+        <div class="field">
+          <label>APORTE MENSAL</label>
+          <div class="input-wrap"><span>R$</span><input id="monthly" inputmode="decimal" value="1000"></div>
+        </div>
+        <div class="field">
+          <label>TAXA DE JUROS</label>
+          <div class="input-wrap"><input id="rate" inputmode="decimal" value="12"><span class="suffix" id="rateSuffix">% ao ano</span></div>
+          <div class="rate-switch">
+            <button class="active" data-rate="year"> % ao ano </button>
+            <button data-rate="month"> % ao mês </button>
+          </div>
+        </div>
+        <div class="field">
+          <label>PERÍODO</label>
+          <div class="input-wrap"><input id="years" inputmode="numeric" value="10"><span class="suffix">anos</span></div>
+        </div>
+        <div class="advanced">⌄ &nbsp;<strong>Avançado (opcional)</strong><span class="badge">INFLAÇÃO E REAJUSTE</span></div>
+        <div class="actions">
+          <button class="primary" id="calculate">Calcular</button>
+          <button class="secondary" id="clear">Limpar</button>
+        </div>
+        <div class="note" id="equivalent">Taxa mensal equivalente: <strong>0,9489% ao mês</strong> · equivalente a <strong>12,00% ao ano</strong></div>
+      </div>
+    </section>
+
+    <section class="results">
+      <div class="result"><small>TOTAL INVESTIDO</small><strong id="invested">R$ 120 mil</strong></div>
+      <div class="result"><small>JUROS GERADOS</small><strong id="interest">R$ 102 mil</strong></div>
+      <div class="result highlight"><small>PATRIMÔNIO FINAL (NOMINAL)</small><strong id="final">R$ 222 mil</strong><div style="color:#9f9a91;font-size:12px;margin-top:5px">valor projetado, sem descontar inflação</div></div>
+    </section>
+  </main>
+
+  <section class="panel chart-panel">
+    <div class="panel-head"><h3>Evolução do patrimônio</h3><p>Comparação entre o total aportado e os juros acumulados.</p></div>
+    <div class="legend"><span><i class="principal"></i>Total aportado</span><span><i class="interest"></i>Rendimento acumulado</span></div>
+    <div class="chart-wrap"><canvas id="chart"></canvas></div>
+  </section>
+
+  <section class="panel table-panel">
+    <div class="panel-head"><h3>EVOLUÇÃO MÊS A MÊS</h3><p>Detalhamento da projeção de cada período.</p></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>MÊS</th><th>APORTE</th><th>JUROS DO MÊS</th><th>TOTAL INVESTIDO</th><th>PATRIMÔNIO</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="footer">Minha Meta · Simulação educacional. Valores são projeções e não representam garantia de rentabilidade.</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let rateMode='year';
+
+function num(v){
+  v=String(v).replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.');
+  const n=parseFloat(v); return Number.isFinite(n)?n:0;
+}
+function brl(v){
+  return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:2}).format(v);
+}
+function compact(v){
+  if(Math.abs(v)>=1000000) return 'R$ '+(v/1000000).toLocaleString('pt-BR',{maximumFractionDigits:1})+' mi';
+  if(Math.abs(v)>=1000) return 'R$ '+(v/1000).toLocaleString('pt-BR',{maximumFractionDigits:0})+' mil';
+  return brl(v);
+}
+function calc(){
+  const initial=num($('initial').value);
+  const monthly=num($('monthly').value);
+  const rate=num($('rate').value);
+  const years=Math.max(1,Math.floor(num($('years').value)));
+  const monthlyRate=rateMode==='year' ? Math.pow(1+rate/100,1/12)-1 : rate/100;
+  let balance=initial, contributed=initial;
+  const rows=[];
+  const points=[];
+  for(let m=1;m<=years*12;m++){
+    const interest=balance*monthlyRate;
+    balance += interest + monthly;
+    contributed += monthly;
+    rows.push({m,aporte:monthly,interest,totalInvested:contributed,balance});
+    if(m%12===0 || m===1) points.push({year:Math.ceil(m/12),contributed,balance,interest:balance-contributed});
+  }
+  $('invested').textContent=compact(contributed);
+  $('interest').textContent=compact(balance-contributed);
+  $('final').textContent=compact(balance);
+  const annual=rateMode==='year'?rate:((Math.pow(1+monthlyRate,12)-1)*100);
+  $('equivalent').innerHTML=`Taxa mensal equivalente: <strong>${(monthlyRate*100).toLocaleString('pt-BR',{minimumFractionDigits:4,maximumFractionDigits:4})}% ao mês</strong> · equivalente a <strong>${annual.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}% ao ano</strong>`;
+  renderTable(rows);
+  drawChart(points);
+  localStorage.setItem('minhaMetaCalc',JSON.stringify({initial,monthly,rate,years,rateMode}));
+}
+function renderTable(rows){
+  $('tbody').innerHTML=rows.map(r=>`
+    <tr class="${r.m%12===0?'year':''}">
+      <td>Mês ${r.m}${r.m%12===0?` <span class="year-tag">ANO ${r.m/12}</span>`:''}</td>
+      <td>${brl(r.aporte)}</td><td class="gold">${brl(r.interest)}</td>
+      <td>${brl(r.totalInvested)}</td><td>${brl(r.balance)}</td>
+    </tr>`).join('');
+}
+function drawChart(points){
+  const c=$('chart'), dpr=window.devicePixelRatio||1, rect=c.getBoundingClientRect();
+  c.width=rect.width*dpr;c.height=rect.height*dpr;
+  const x=c.getContext('2d');x.scale(dpr,dpr);
+  const w=rect.width,h=rect.height;
+  const pad={l:54,r:16,t:18,b:44};
+  const max=Math.max(...points.map(p=>p.balance),1)*1.08;
+  x.font='11px system-ui';x.lineWidth=1;
+  const yVal=v=>h-pad.b-(v/max)*(h-pad.t-pad.b);
+  for(let i=0;i<=4;i++){
+    const y=pad.t+i*(h-pad.t-pad.b)/4;
+    x.strokeStyle='#292824';x.beginPath();x.moveTo(pad.l,y);x.lineTo(w-pad.r,y);x.stroke();
+    const val=max*(1-i/4);
+    x.fillStyle='#9a968f';x.textAlign='right';x.fillText(compact(val),pad.l-8,y+4);
+  }
+  const xVal=i=>pad.l+(i/(points.length-1||1))*(w-pad.l-pad.r);
+  const barW=Math.max(10,Math.min(42,(w-pad.l-pad.r)/points.length*.58));
+  points.forEach((p,i)=>{
+    const cx=xVal(i), yC=yVal(p.contributed), yF=yVal(p.balance);
+    x.fillStyle='#6e6e6e';x.fillRect(cx-barW/2,yC,barW,h-pad.b-yC);
+    x.fillStyle='#efd05e';x.fillRect(cx-barW/2,yF,barW,yC-yF);
+    x.fillStyle='#aaa69f';x.textAlign='center';x.fillText('Ano '+p.year,cx,h-pad.b+25);
+  });
+}
+function load(){
+  const s=JSON.parse(localStorage.getItem('minhaMetaCalc')||'null');
+  if(s){$('initial').value=s.initial;$('monthly').value=s.monthly;$('rate').value=s.rate;$('years').value=s.years;rateMode=s.rateMode||'year';}
+  document.querySelectorAll('[data-rate]').forEach(b=>b.classList.toggle('active',b.dataset.rate===rateMode));
+  $('rateSuffix').textContent=rateMode==='year'?'% ao ano':'% ao mês';
+  calc();
+}
+document.querySelectorAll('[data-rate]').forEach(b=>b.addEventListener('click',()=>{
+  rateMode=b.dataset.rate;
+  document.querySelectorAll('[data-rate]').forEach(x=>x.classList.toggle('active',x===b));
+  $('rateSuffix').textContent=rateMode==='year'?'% ao ano':'% ao mês';
+  calc();
+}));
+$('calculate').onclick=calc;
+$('clear').onclick=()=>{
+  $('initial').value='0';$('monthly').value='1000';$('rate').value='12';$('years').value='10';rateMode='year';
+  document.querySelectorAll('[data-rate]').forEach(x=>x.classList.toggle('active',x.dataset.rate==='year'));
+  $('rateSuffix').textContent='% ao ano';calc();
+};
+$('resetTop').onclick=()=>{localStorage.removeItem('minhaMetaCalc');$('clear').click();window.scrollTo({top:0,behavior:'smooth'});}
+window.addEventListener('resize',()=>calc());
+load();
+</script>
+</body>
+</html>
